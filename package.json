@@ -1,0 +1,14 @@
+{
+  "name": "mockingbird",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "ws --directory ./src"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "local-web-server": "^1.2.6"
+  }
+}
