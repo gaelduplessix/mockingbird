@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "ws --directory ./src"
+    "start": "ws --directory ./src",
+    "build-elm": "elm-make src/elm-app/Main.elm --output=src/elm-app/build.js"
   },
   "author": "",
   "license": "ISC",

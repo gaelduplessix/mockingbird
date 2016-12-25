@@ -62,3 +62,6 @@ setTimeout(() => {
     console.log('error...', error)
   })
 }, 500)
+
+const root = document.getElementById('root');
+const app = Elm.Main.embed(root);
