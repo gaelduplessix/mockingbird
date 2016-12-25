@@ -3,7 +3,7 @@ const root = document.getElementById('root');
 const ElmApp = Elm.Main.embed(root);
 
 ElmApp.ports.requestResponse.subscribe((response) => {
- console.log('response from elm!', response)
+ requestResponse(response.id, response.url)
 });
 
 
@@ -49,7 +49,7 @@ function onWorkerMessage(event) {
   switch (event.data.type) {
     case 'NEW_REQUEST':
       console.log('new pending request', payload)
-      ElmApp.ports.newRequest.send('' + payload.id)
+      ElmApp.ports.newRequest.send(payload)
       break;
     default:
       // Ignore message
@@ -64,11 +64,11 @@ function requestResponse(requestId, body, params) {
   })
 }
 
-setTimeout(() => {
+function fetchRequest() {
   // Perform a fetch
   fetch('/api/users').then((response) => {
     console.log('sucess!', response)
   }, (error) => {
     console.log('error...', error)
   })
-}, 500)
+}
