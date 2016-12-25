@@ -1,6 +1,13 @@
-console.log('Worker launched!')
+//console.log('Worker launched!')
 
+/**
+ * Store pending request in global scope
+ * It's ok to do that because we don't need to persist state accross page reloads,
+ * and because we want to store callbacks, we can't use IndexedDb
+ */
 const pendingRequests = {}
+
+// Channel used to communicate between worker and page
 let messageChannel = null
 
 self.addEventListener('fetch', (event) => {
@@ -22,7 +29,7 @@ self.addEventListener('fetch', (event) => {
 })
 
 self.addEventListener('message', (event) => {
-  console.log('Message channel opened in worker')
+  //console.log('Message channel opened in worker')
   messageChannel = event.ports[0]
   event.ports[0].onmessage = (event) => {
     //console.log('message received in worker', event)
@@ -35,7 +42,12 @@ self.addEventListener('message', (event) => {
     switch (event.data.type) {
       case 'REQUEST_RESPONSE':
         const requestId = payload.requestId
-        pendingRequests[requestId].resolve(new Response(payload.body, payload.params))
+        const request = pendingRequests[requestId]
+        if (payload.passthrough) {
+          request.resolve(fetch(request.event.request))
+        } else {
+          request.resolve(new Response(payload.body, payload.params))
+        }
         break;
       default:
         // Ignore message

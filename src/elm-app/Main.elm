@@ -25,7 +25,7 @@ init = (Model [], Cmd.none)
 
 type Msg
   = NewRequest Request
-  | SendResponse Request
+  | SendResponse Response
 
 update: Msg -> Model -> (Model, Cmd Msg)
 
@@ -33,7 +33,7 @@ update msg model =
   case msg of
     NewRequest request -> ({ model | pendingRequests = request::model.pendingRequests }, Cmd.none)
     SendResponse response -> (
-      { model | pendingRequests = (removeRequest response.id model.pendingRequests)
+      { model | pendingRequests = (removeRequest response.requestId model.pendingRequests)
       },
       requestResponse response
     )
@@ -60,7 +60,8 @@ view model =
 
 requestView request =
   li [ class "request" ]
-  [ button [ onClick (SendResponse request) ] [ text "Send response" ]
+  [ button [ onClick (SendResponse (Response request.id False "Body!")) ] [ text "Send response" ]
+  , button [ onClick (SendResponse (Response request.id True "")) ] [ text "Pass through" ]
   , strong [] [text request.url]
   , text (" (" ++ (toString request.id) ++ ")")
   ]
@@ -70,8 +71,14 @@ type alias Request =
   , url: String
   }
 
+type alias Response =
+  { requestId: Float
+  , passthrough: Bool
+  , body: String
+  }
+
 -- Port for receiving pending requests from javascript
 port newRequest: (Request -> msg) -> Sub msg
 
 -- Port for sending request responses to javascript
-port requestResponse: Request -> Cmd msg
+port requestResponse: Response -> Cmd msg

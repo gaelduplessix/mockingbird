@@ -2,10 +2,10 @@
 const root = document.getElementById('root');
 const ElmApp = Elm.Main.embed(root);
 
+// When a response is sent by Elm app, forward it to service worker
 ElmApp.ports.requestResponse.subscribe((response) => {
- requestResponse(response.id, response.url)
+ requestResponse(response.requestId, response.passthrough, response.body)
 });
-
 
 
 // Install service worker
@@ -19,6 +19,10 @@ window.addEventListener('load', () => {
   })
 })
 
+/**
+ * Communication channel between page and service worker
+ * cf: http://stackoverflow.com/questions/30177782/chrome-serviceworker-postmessage
+ */
 let workerChannel
 
 function onReady() {
@@ -34,6 +38,9 @@ function onReady() {
   }, [workerChannel.port2])
 }
 
+/**
+ * Send a message to the service worker
+ */
 function sendMessage(message) {
   workerChannel.port1.postMessage(message)
 }
@@ -48,27 +55,37 @@ function onWorkerMessage(event) {
 
   switch (event.data.type) {
     case 'NEW_REQUEST':
-      console.log('new pending request', payload)
+      // When a request is intercepted, forward it to the Elm app
       ElmApp.ports.newRequest.send(payload)
       break;
     default:
       // Ignore message
   }
-
 }
 
-function requestResponse(requestId, body, params) {
+/**
+ * Send a request response to the service worker
+ * @param requestId Id of request to respond to
+ * @param passthrough If true, worker will just let the request pass through
+ * (i.e perform the actual request)
+ * @param {string} body Response body
+ * @param {object} params Init params that should be given to fetch Response() constructor
+ */
+function requestResponse(requestId, passthrough, body, params) {
   sendMessage({
     type: 'REQUEST_RESPONSE',
-    payload: { requestId, body, params },
+    payload: { requestId, passthrough, body, params },
   })
 }
 
+/**
+ * Just a simple demo feature that triggers an HTTP request
+ */
 function fetchRequest() {
   // Perform a fetch
-  fetch('/api/users').then((response) => {
-    console.log('sucess!', response)
+  fetch('/api/users/'+Math.random()).then((response) => {
+    console.log('fetch sucess!', response)
   }, (error) => {
-    console.log('error...', error)
+    console.log('fetch error...', error)
   })
 }
