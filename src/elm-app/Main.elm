@@ -60,7 +60,7 @@ view model =
 
 requestView request =
   li [ class "request" ]
-  [ button [ onClick (SendResponse (Response request.id False "Body!")) ] [ text "Send response" ]
+  [ button [ onClick (SendResponse (Response request.id False "Mocked body!")) ] [ text "Send response" ]
   , button [ onClick (SendResponse (Response request.id True "")) ] [ text "Pass through" ]
   , strong [] [text request.url]
   , text (" (" ++ (toString request.id) ++ ")")
