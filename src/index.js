@@ -1,3 +1,12 @@
+// Init Elm app
+const root = document.getElementById('root');
+const ElmApp = Elm.Main.embed(root);
+
+ElmApp.ports.requestResponse.subscribe((response) => {
+ console.log('response from elm!', response)
+});
+
+
 
 // Install service worker
 window.addEventListener('load', () => {
@@ -30,7 +39,7 @@ function sendMessage(message) {
 }
 
 function onWorkerMessage(event) {
-  console.log('message from worker:', event)
+  //console.log('message from worker:', event)
   if (!event.data.type) {
     return
   }
@@ -40,6 +49,7 @@ function onWorkerMessage(event) {
   switch (event.data.type) {
     case 'NEW_REQUEST':
       console.log('new pending request', payload)
+      ElmApp.ports.newRequest.send('' + payload.id)
       break;
     default:
       // Ignore message
@@ -62,6 +72,3 @@ setTimeout(() => {
     console.log('error...', error)
   })
 }, 500)
-
-const root = document.getElementById('root');
-const app = Elm.Main.embed(root);

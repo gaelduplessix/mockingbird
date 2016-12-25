@@ -25,7 +25,7 @@ self.addEventListener('message', (event) => {
   console.log('Message channel opened in worker')
   messageChannel = event.ports[0]
   event.ports[0].onmessage = (event) => {
-    console.log('message received in worker', event)
+    //console.log('message received in worker', event)
     if (!event.data.type) {
       return
     }
