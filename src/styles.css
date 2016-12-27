@@ -1,0 +1,45 @@
+body {
+  font-family: sans-serif;
+}
+
+button {
+  border: 1px solid #ccc;
+  background: white;
+  border-radius: 4px;
+  padding: 5px 8px;
+  margin: 5px
+}
+
+.routes {
+  list-style-type: none;
+  padding: 0px 20px;
+}
+
+.route {
+  display: block;
+  margin-bottom: 20px;
+}
+
+.route label, .route input, .route textarea {
+  display: block;  
+}
+
+.route label {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.route input, .route textarea {
+  margin-top: 5px;
+  padding: 10px;
+  font-size: 14px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.route input:focus, .route textarea:focus {
+  outline: none;
+  border: 1px solid #2196F3;
+}

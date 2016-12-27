@@ -82,8 +82,8 @@ function requestResponse(requestId, passthrough, body, params) {
  * Just a simple demo feature that triggers an HTTP request
  */
 function fetchRequest() {
-  // Perform a fetch
-  fetch('/api/users/'+Math.random()).then((response) => {
+  const fetchUrl = document.getElementById('fetchUrl').value
+  fetch(fetchUrl).then((response) => {
     console.log('fetch sucess!', response)
   }, (error) => {
     console.log('fetch error...', error)
